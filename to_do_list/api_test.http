@@ -1,0 +1,28 @@
+### Health Check / Root Endpoint
+GET http://127.0.0.1:5000/
+
+### Get All Todos
+GET http://127.0.0.1:5000/api/todos/
+
+### Create a New Todo
+POST http://127.0.0.1:5000/api/todos/
+Content-Type: application/json
+
+{
+    "title": "Complete Flask REST API",
+    "completed": false
+}
+
+### Get Todo by ID
+GET http://127.0.0.1:5000/api/todos/1
+
+### Update Todo Status
+PUT http://127.0.0.1:5000/api/todos/1
+Content-Type: application/json
+
+{
+    "completed": true
+}
+
+### Delete Todo
+DELETE http://127.0.0.1:5000/api/todos/1

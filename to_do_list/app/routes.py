@@ -1,9 +1,24 @@
 from flask import Blueprint, request, jsonify
 from app import db
 from app.models import Todo
+from flask import redirect
 
 
 todo_bp = Blueprint("todos", __name__, url_prefix="/api/todos")
+
+
+@todo_bp.route("/info", methods=["GET"])
+def index_info():
+    return jsonify({
+        "status": "online",
+        "message": "Todo API is running",
+        "endpoints": "/api/todos/"
+    })
+
+
+@todo_bp.route("/redirect", methods=["GET"])
+def index_redirect():
+    return redirect("/api/todos/")
 
 
 # GET /api/todos
@@ -20,12 +35,9 @@ def get_todos():
 # GET /api/todos/<id>
 @todo_bp.route("/<int:todo_id>", methods=["GET"])
 def get_todo(todo_id):
-    todo = db.session.get(Todo, todo_id)
-
-    if not todo:
-        return jsonify({
-            "error": "Todo not found"
-        }), 404
+    todo = db.get_or_404(
+        Todo, todo_id, description="Todo not found"
+        )
 
     return jsonify(todo.to_dict())
 
@@ -54,12 +66,9 @@ def create_todo():
 # PUT /api/todos/<id>
 @todo_bp.route("/<int:todo_id>", methods=["PUT"])
 def update_todo(todo_id):
-    todo = db.session.get(Todo, todo_id)
-
-    if not todo:
-        return jsonify({
-            "error": "Todo not found"
-        }), 404
+    todo = db.get_or_404(
+        Todo, todo_id, description="Todo not found"
+        )
 
     data = request.get_json()
 
@@ -77,12 +86,9 @@ def update_todo(todo_id):
 # DELETE /api/todos/<id>
 @todo_bp.route("/<int:todo_id>", methods=["DELETE"])
 def delete_todo(todo_id):
-    todo = db.session.get(Todo, todo_id)
-
-    if not todo:
-        return jsonify({
-            "error": "Todo not found"
-        }), 404
+    todo = db.get_or_404(
+        Todo, todo_id, description="Todo not found"
+        )
 
     db.session.delete(todo)
     db.session.commit()
